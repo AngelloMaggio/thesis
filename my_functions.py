@@ -2,6 +2,7 @@ import networkx as nx
 import itertools
 import random
 import ast
+import math
 
 def logIt(G, message_string):
     print message_string
@@ -49,6 +50,11 @@ def addRandomWeight(G):
     print "-----------------------------------------------------"
     return G
 
+def dec2base(n, b):
+    if not n:
+        return []
+    return dec2base(n//b, b) + [n%b]
+
 
 def setCases(cabs, users, destinations):
 
@@ -56,6 +62,7 @@ def setCases(cabs, users, destinations):
     cabperm_list = []
     userperm_list = []
     destperm_list = []
+
     print "Permutations for cabs, users, and destinations:"
     for i in range(1, len(cabs)+1):
         cabperm = list(itertools.permutations(cabs, i))
@@ -75,19 +82,29 @@ def setCases(cabs, users, destinations):
         temp_list+=item
     destperm_list = temp_list
 
+    print cabperm_list
     print userperm_list
     print destperm_list
+
     print "-----------------------------------------------------"
     print "-----------------------------------------------------"
     print "-----------------------------------------------------"
 
     #All the products
 
+    print "cabs to people"
     cabs_to_people = [list(itertools.product(cabs, x)) for x in userperm_list]
     print cabs_to_people
+    print len(cabs_to_people)
     cabs_to_people = str(cabs_to_people).replace("('", "'").replace(',)', ')')
     cabs_to_people = cabs_to_people.replace("))", ")")
+    print "After cleanup:"
     print cabs_to_people
+    print len(cabs_to_people)
+    print "Made into a real list from string:"
+    cabs_to_people = ast.literal_eval(cabs_to_people)
+    print cabs_to_people
+    print len(cabs_to_people)
     print "-----------------------------------------------------"
     print "-----------------------------------------------------"
 
@@ -113,13 +130,18 @@ def setCases(cabs, users, destinations):
     for item in new_people_to_dest:
         temp_list+=item
     new_people_to_dest = temp_list
-    print new_people_to_dest
+    print "Product people to dest: "
+    print people_to_dest
     print len(people_to_dest)
+    print "After nested loop:"
+    print new_people_to_dest
     print len(new_people_to_dest)
 
     people_to_dest = new_people_to_dest
 
     people_to_dest = set(people_to_dest)
+
+    print "length of people to destination after nested and made into set"
     print len(people_to_dest)
     people_to_dest = list(people_to_dest)
 
@@ -142,10 +164,12 @@ def setCases(cabs, users, destinations):
                 pass
                 #people_to_dest.remove(path)
             else:
+                print "Remove:"
                 print path
                 people_to_dest.remove(path)
         except: pass
 
+    print "people to dest after removals:"
     print people_to_dest
     print len(people_to_dest)
 
@@ -153,3 +177,31 @@ def setCases(cabs, users, destinations):
     #final_list = list(itertools.product(cabs_to_people, people_to_dest)
     #for path in final_list: print path
     #print len(final_list)
+
+
+    print "______________________________"
+    print "______________________________"
+    print "______________________________"
+    print "______________________________"
+    print "______________________________"
+    print "______________________________"
+    print "______________________________"
+    print "______________________________"
+    print "cabs:"
+    cabs = [1, 2, 3]
+    print cabs
+    print "people:"
+    people = ["A", "B", "C", "D"]
+
+    lencabs = len(cabs)
+    lenpeople = len(people)
+    lenmax = max(lencabs, lenpeople)
+
+    for item in range(0, lencabs**lenpeople):
+        print str(lencabs)+"-ary version of",item
+        baseitem = dec2base(item, lencabs)
+        if len(baseitem) < lenmax:
+            baseitem = [0]*(lenmax-len(baseitem)) + baseitem
+        print baseitem
+
+            
